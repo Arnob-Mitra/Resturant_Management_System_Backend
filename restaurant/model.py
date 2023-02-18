@@ -28,7 +28,7 @@ class Restaurant(Document):
     chainOf:UUID 
     coupons:Optional[Coupons]
     ratings:Optional[Ratings]
-    images:str
+    images:Optional[str]
     cuisineType:str
     createdAt:datetime = datetime.now()
     updatedAt:datetime = datetime.now()
