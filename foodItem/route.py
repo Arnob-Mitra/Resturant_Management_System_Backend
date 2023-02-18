@@ -29,6 +29,5 @@ async def update(foodId:UUID, data:foodDTO):
 
 @router.delete('/{foodId}')
 async def delete(foodId:UUID, data:foodDTO):
-    data = await foodModel.find_one(foodModel.id == foodId)
-    await data.delete()
+    data = await foodModel.find_one(foodModel.id == foodId).delete()
     return {'success':True, 'message':'Food item delate successfully', 'data':data}

@@ -5,7 +5,7 @@ from pydantic import Field, BaseModel
 from typing import Optional
 
 class Coupons(BaseModel):
-    id:UUID = Field(default_factory=uuid4)
+    id:UUID = Field(default_factory=uuid4) 
     code:str
     validTil:datetime = datetime.now()
     maxUse:int 
