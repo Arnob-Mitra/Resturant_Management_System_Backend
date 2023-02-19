@@ -18,9 +18,7 @@ class Discount(BaseModel):
 
 class Offers(BaseModel):
     discount:Discount 
-    limit:Optional[float]
-    
-    
+    limit:Optional[float]    
 
 class FoodItem(Document):
     id:UUID = Field(default_factory=uuid4)
@@ -29,13 +27,9 @@ class FoodItem(Document):
     description:str
     category:str
     cuisine:str
-    foodType:str
-    price:float
-    currency: str
+    price:Price
     recipe:dict[str, Discount]
-    image: str
+    image:Optional[str]
     createdAt:datetime = datetime.now()
     updatedAt:datetime = datetime.now()
-    offers:Optional[Offers]
-    
-    
+    offers:Optional[Offers]    

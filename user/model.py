@@ -5,7 +5,7 @@ from typing import Optional
 from datetime import datetime
 
 class User(Document):
-    id:UUID = Field(default_factory= uuid4())
+    id:UUID = Field(default_factory= uuid4)
     name:Optional[str]
     phone:str
     email:Optional[str]

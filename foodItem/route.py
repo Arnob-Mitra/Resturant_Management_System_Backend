@@ -1,4 +1,4 @@
-from foodItem.dto import FoodItemDTO as foodDTO
+from foodItem.createdto import FoodItemDTO as foodDTO
 from foodItem.model import FoodItem as foodModel
 from fastapi import APIRouter
 from uuid import UUID

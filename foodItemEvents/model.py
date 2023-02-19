@@ -10,5 +10,3 @@ class FoodItemEvents(Document):
     value_from:int
     value_to:int
     createdAt:datetime = datetime.now()
-    
-    
