@@ -1,4 +1,4 @@
-from restaurant.createdto import RestaurantCreateDTO 
+from restaurant.dto import CreateDTO 
 from restaurant.model import Restaurant
 from fastapi import APIRouter
 from uuid import UUID
@@ -18,18 +18,18 @@ async def get_all():
 
 
 @router.post('/')
-async def create(data:RestaurantCreateDTO):
+async def create(data:CreateDTO):
     result = Restaurant(**data.dict())
     await result.save()
     return{'success':True, 'message':'Food item successfully created', 'data':result}
 
 
 @router.patch('/{restaurantId}')
-async def update(restaurantId:UUID, data:RestaurantCreateDTO):
+async def update(restaurantId:UUID, data:CreateDTO):
     result = await Restaurant.find_one(Restaurant.id == restaurantId).update({'$set': data.dict()})
     return {'success':True, 'message':'Food item updated successfully', 'data': data.dict()}
 
 @router.delete('/{restaurantId}')
-async def delete(restaurantId:UUID, data:RestaurantCreateDTO):
+async def delete(restaurantId:UUID, data:CreateDTO):
     data = await Restaurant.find_one(Restaurant.id == restaurantId).delete()
     return {'success':True, 'message':'Food item delate successfully', 'data':data}

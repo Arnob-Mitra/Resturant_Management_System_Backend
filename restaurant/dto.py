@@ -4,9 +4,13 @@ from datetime import datetime
 from typing import Optional
 from .model import Address
 
-class RestaurantCreateDTO(BaseModel):
+class CreateDTO(BaseModel):
     managedBy:UUID 
     name:str
     address:Address
     chainOf:UUID 
     cuisineType:str
+    
+
+        
+    
