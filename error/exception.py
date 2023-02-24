@@ -8,6 +8,4 @@ class Unauthorized(Exception):
     def __init__(self, status_code:int=401, message:str="User is unauthorized"):
         self.status_code = status_code
         self.message = message
-        super().__init__(self.message)
-        
-        
+        super().__init__(self.message)     

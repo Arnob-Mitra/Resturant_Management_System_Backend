@@ -7,28 +7,28 @@ from typing import Optional
 class Coupons(BaseModel):
     id:UUID = Field(default_factory=uuid4) 
     code:str
-    validTil:datetime = datetime.now()
-    maxUse:int 
+    valid_til:datetime = datetime.now()
+    max_use:int 
         
 class Ratings(BaseModel):
     ambience:str
     taste:str
     cleanliness:str
     staff:str
-    budgetFriendly:str
+    budget_friendly:str
     
 class Address(BaseModel):
     country:str    
 
 class Restaurant(Document):
     id:UUID = Field(default_factory=uuid4)
-    managedBy:UUID 
+    managed_by:UUID 
     name:str
     address:Address
-    chainOf:UUID 
+    chain_of:UUID 
     coupons:Optional[Coupons]
     ratings:Optional[Ratings]
     images:Optional[str]
-    cuisineType:str
-    createdAt:datetime = datetime.now()
-    updatedAt:datetime = datetime.now()
+    cuisine_type:str
+    created_at:datetime = datetime.now()
+    updated_at:datetime = datetime.now()

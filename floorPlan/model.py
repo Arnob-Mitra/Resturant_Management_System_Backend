@@ -1,12 +1,13 @@
 from beanie import Document 
-from datetime import datetime 
-from uuid import UUID, uuid4
-from pydantic import Field
+from restaurant.model import Restaurant
+from pydantic import BaseModel
+
+class Table(BaseModel):
+    table_number: str
+    location_x: float
+    location_y: float
 
 class FloorPlan(Document):
-    id:UUID = Field(default_factory= uuid4())
-    restaurant:UUID 
-    floorNumber:int 
-    detail:str
-    createdAt:datetime = datetime.now()
-    updatedAt:datetime = datetime.now()
+    restaurant: Restaurant
+    floor_number: str 
+    tables: Table

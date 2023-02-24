@@ -1,7 +1,17 @@
 from pydantic import BaseModel
-from uuid import UUID
+from restaurant.model import Restaurant
+from .model import Table
 
-class FloorPlan(BaseModel):
-    restaurant:UUID 
-    floorNumber:int 
-    detail:str
+class CreateDTO(BaseModel): 
+    floor_number: str
+    tables: Table
+
+class UpdateDTO(BaseModel):
+    restaurant: Restaurant
+    floor_number: str
+    tables: Table
+
+class ResponseDTO(BaseModel):
+    restaurant: Restaurant
+    floor_number: str
+    tables: Table    
