@@ -9,3 +9,9 @@ class Unauthorized(Exception):
         self.status_code = status_code
         self.message = message
         super().__init__(self.message)     
+        
+class  NotAcceptable(Exception):
+    def __init__(self, status_code=406, message:str="Not Acceptable"):
+        self.status_code = status_code
+        self.message = message      
+        super().__init__(self.message)

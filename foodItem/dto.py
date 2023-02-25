@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from .model import Measurement, Discount
+from base.model import Measurement, Discount
 from typing import Optional
 from restaurant.model import Restaurant
 

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from .model import UserTypeEnum
+from uuid import UUID
 
 class CreateDTO(BaseModel):
     phone: str
@@ -11,10 +12,9 @@ class CreateDTO(BaseModel):
 class UpdateUserDTO(BaseModel):
     name: Optional[str]
     email: Optional[str]
-    password: Optional[str]
-    last_login: Optional[datetime]
     
 class ResponseDTO(BaseModel):
+    id:UUID
     name: Optional[str]
     phone: str
     email: Optional[str]
@@ -29,4 +29,3 @@ class LoginDTO(BaseModel):
 class ChangePasswordDTO(BaseModel):
     old_password: str
     new_password: str
-    confirm_password: str    

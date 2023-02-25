@@ -3,33 +3,11 @@ from pydantic import Field, BaseModel
 from uuid import UUID, uuid4
 from typing import Optional
 from restaurant.model import Restaurant
-from enum import Enum 
-
-#class allCurrency (Enum):
-#    BDT:str ="BDT"
-class DateFrequencyEnum(Enum):
-    daily: str = "daily"
-
-class RangeString(BaseModel):
-    value_from: str
-    value_to: str
-
-class Measurement(BaseModel):
-    value:float
-    unit:str
-
-class Discount(BaseModel):
-    id:UUID = Field(default_factory=uuid4)
-    discount_type: str
-    code: Optional[str]
-    validation_date_range: Optional[RangeString]
-    validation_time_range: Optional[RangeString]
-    discounted_amount: Optional[Measurement] 
-    data_frequency: Optional[DateFrequencyEnum] 
-    price_limit: Optional[float] 
+from datetime import datetime
+from base.model import Measurement, Discount
 
 class FoodItem(Document):
-    restaurant: Restaurant 
+    id:UUID = Field(default_factory=uuid4)
     name: str
     description: str
     category: str
@@ -37,4 +15,7 @@ class FoodItem(Document):
     price: Measurement
     recipe: dict[str, Measurement]
     image: Optional[str]
-    offers: Optional[Discount]    
+    restaurant: Restaurant
+    offer: Optional[Discount]
+    created_at:datetime = datetime.now()
+    updated_at:datetime = datetime.now()
