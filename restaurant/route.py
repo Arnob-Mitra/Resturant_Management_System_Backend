@@ -37,7 +37,7 @@ async def get_all():
         restuarant = await Restaurant.find().to_list()
         if restuarant is None:
             return EntityNotFoundError
-        return {"success":True, "message":"List of all food items", 'data':restuarant}
+        return {"success":True, "message":"List of all restaurants", 'data':restuarant}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':str(e)}, status_code=500)
 

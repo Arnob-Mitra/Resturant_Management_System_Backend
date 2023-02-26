@@ -82,7 +82,7 @@ async def changePassword(user_Id:UUID, data:ChangePasswordDTO):
     try:
         #user = await User.find_one(User.password == data.old_password).update({'$set': data.dict()})
         user = await User.get_motor_collection().find_one_and_update({ '_id': user_Id}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
-        return {'success':True, 'message':'Password has been changed successfully', 'data':user}
+        return {'success':True, 'message':'Password has been changed successfully'}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code = 500)
     
