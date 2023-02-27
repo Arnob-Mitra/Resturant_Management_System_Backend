@@ -1,23 +1,18 @@
 from beanie import Document
-from datetime import datetime
+from pydantic import BaseModel, Field
+from base.model import Measurement
+from restaurant.model import Restaurant
 from uuid import UUID, uuid4
-from pydantic import Field, BaseModel
-
-
-class Price(BaseModel):
-    value:float
-    currency:str
+from datetime import datetime
 
 class Quantity(BaseModel):
-    value:float
-    restockAlert:float
-    unit:str
+    restock_alert: int
 
 class Inventory(Document):
-    id:UUID = Field(default_factory= uuid4())
-    entity:UUID 
-    name:str
-    price:Price
-    quantity:int 
-    createdAt:datetime = datetime.now()
-    updatedAt:datetime = datetime.now()
+    id: UUID = Field(default_factory = uuid4)
+    name: str
+    price: Measurement
+    quantity: Quantity
+    restaurant: Restaurant
+    created_at: datetime = datetime.now()
+    updated_at: datetime = datetime.now()

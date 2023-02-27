@@ -1,6 +1,6 @@
 from error.exception import EntityNotFoundError
-from order.dto import CreateDTO, UpdateDTO, ResponseDTO
-from order.model import Order
+from userRole.dto import CreateDTO, UpdateDTO, ResponseDTO
+from userRole.model import UserRole
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
@@ -11,20 +11,20 @@ router = APIRouter()
 @router.post('/')  
 async def create(data:CreateDTO):
     try:
-        order = Order(**data.dict())
-        await order.save()
-        return{'success': True, 'message': 'Order has been created successfully', 'data': order}
+        user_role = UserRole(**data.dict())
+        await user_role.save()
+        return{'success': True, 'message': 'User role has been created successfully', 'data': user_role}
     except Exception as e:
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{orderId}')
-async def get_by_id(orderId:UUID):
+@router.get('/{user_roleId}')
+async def get_by_id(user_roleId:UUID):
     try:
-        order = await Order.get(orderId)
-        if order is None:
+        user_role = await UserRole.get(user_roleId)
+        if user_role is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Successfully get the order', 'data':ResponseDTO(**order.dict()).dict()}
+        return {'success':True, 'message':'Successfully get the user role', 'data':ResponseDTO(**user_role.dict()).dict()}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
@@ -34,35 +34,35 @@ async def get_by_id(orderId:UUID):
 @router.get('/')
 async def get_all():
     try:
-        order = await Order.find().to_list()
-        if order is None:
+        user_role = await UserRole.find().to_list()
+        if user_role is None:
             raise EntityNotFoundError
-        return {"success":True, "message":"List of all orders", 'data': order}
+        return {"success":True, "message":"List of all types of user roles", 'data': user_role}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{orderId}')
-async def update(orderId:UUID, data:UpdateDTO):
+@router.patch('/{user_roleId}')
+async def update(user_roleId:UUID, data:UpdateDTO):
     try:
-        order = await Order.get_motor_collection().find_one_and_update({ '_id': orderId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
-        if order is None:
+        user_role = await UserRole.get_motor_collection().find_one_and_update({ '_id': user_roleId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
+        if user_role is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Order updated successfully', 'data': order}
+        return {'success':True, 'message':'User role updated successfully', 'data': user_role}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{orderId}')
-async def delete(orderId:UUID):
+@router.delete('/{user_roleId}')
+async def delete(user_roleId:UUID):
     try: 
-        order = await Order.get_motor_collection().find_one_and_delete({ '_id': orderId})
-        if order is None:
+        user_role = await UserRole.get_motor_collection().find_one_and_delete({ '_id': user_roleId})
+        if user_role is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Delete successfully'}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success': False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
-        return JSONResponse(content={'success': False,'message': str(e)}, status_code = 500)   
+        return JSONResponse(content={'success': False,'message': str(e)}, status_code = 500)       

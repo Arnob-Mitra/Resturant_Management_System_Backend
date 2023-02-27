@@ -1,30 +1,32 @@
 from error.exception import EntityNotFoundError
-from order.dto import CreateDTO, UpdateDTO, ResponseDTO
-from order.model import Order
+from inventory.dto import ResponseDTO, CreateDTO, UpdateDTO
+from inventory.model import Inventory
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
 from pymongo import ReturnDocument
+
+
 
 router = APIRouter()
 
 @router.post('/')  
 async def create(data:CreateDTO):
     try:
-        order = Order(**data.dict())
-        await order.save()
-        return{'success': True, 'message': 'Order has been created successfully', 'data': order}
+        inventory = Inventory(**data.dict())
+        await inventory.save()
+        return{'success': True, 'message': 'Inventory has been created successfully', 'data':inventory}
     except Exception as e:
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{orderId}')
-async def get_by_id(orderId:UUID):
+@router.get('/{inventoryId}')
+async def get_by_id(inventoryId:UUID):
     try:
-        order = await Order.get(orderId)
-        if order is None:
+        inventory = await Inventory.get(inventoryId)
+        if inventory is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Successfully get the order', 'data':ResponseDTO(**order.dict()).dict()}
+        return {'success':True, 'message':'Successfully get the inventory', 'data':ResponseDTO(**inventory.dict()).dict()}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
@@ -34,35 +36,36 @@ async def get_by_id(orderId:UUID):
 @router.get('/')
 async def get_all():
     try:
-        order = await Order.find().to_list()
-        if order is None:
+        inventory = await Inventory.find().to_list()
+        if inventory is None:
             raise EntityNotFoundError
-        return {"success":True, "message":"List of all orders", 'data': order}
+        return {"success":True, "message":"List of all types of inventories", 'data':inventory}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{orderId}')
-async def update(orderId:UUID, data:UpdateDTO):
+@router.patch('/{inventoryId}')
+async def update(inventoryId:UUID, data:UpdateDTO):
     try:
-        order = await Order.get_motor_collection().find_one_and_update({ '_id': orderId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
-        if order is None:
+        inventory = await Inventory.get_motor_collection().find_one_and_update({ '_id': inventoryId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
+        # await User.find_one(User.id == userId).update({'$set': data.dict()})
+        if inventory is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Order updated successfully', 'data': order}
+        return {'success':True, 'message':'Inventory updated successfully', 'data':inventory}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{orderId}')
-async def delete(orderId:UUID):
+@router.delete('/{inventoryId}')
+async def delete(inventoryId:UUID):
     try: 
-        order = await Order.get_motor_collection().find_one_and_delete({ '_id': orderId})
-        if order is None:
+        inventory = await Inventory.get_motor_collection().find_one_and_delete({ '_id': inventoryId})
+        if inventory is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Delete successfully'}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success': False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
-        return JSONResponse(content={'success': False,'message': str(e)}, status_code = 500)   
+        return JSONResponse(content={'success': False,'message': str(e)}, status_code = 500)       

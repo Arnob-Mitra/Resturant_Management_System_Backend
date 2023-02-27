@@ -1,6 +1,6 @@
 from error.exception import EntityNotFoundError
-from order.dto import CreateDTO, UpdateDTO, ResponseDTO
-from order.model import Order
+from orderEvent.dto import CreateDTO, UpdateDTO, ResponseDTO
+from orderEvent.model import OrderEvent
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
@@ -11,20 +11,20 @@ router = APIRouter()
 @router.post('/')  
 async def create(data:CreateDTO):
     try:
-        order = Order(**data.dict())
-        await order.save()
-        return{'success': True, 'message': 'Order has been created successfully', 'data': order}
+        order_event = OrderEvent(**data.dict())
+        await order_event.save()
+        return{'success': True, 'message': 'Order Event has been created successfully', 'data': order_event}
     except Exception as e:
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{orderId}')
-async def get_by_id(orderId:UUID):
+@router.get('/{order_eventId}')
+async def get_by_id(order_eventId:UUID):
     try:
-        order = await Order.get(orderId)
-        if order is None:
+        order_event = await OrderEvent.get(order_eventId)
+        if order_event is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Successfully get the order', 'data':ResponseDTO(**order.dict()).dict()}
+        return {'success':True, 'message':'Successfully get the order event', 'data':ResponseDTO(**order_event.dict()).dict()}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
@@ -34,32 +34,32 @@ async def get_by_id(orderId:UUID):
 @router.get('/')
 async def get_all():
     try:
-        order = await Order.find().to_list()
-        if order is None:
+        order_event = await OrderEvent.find().to_list()
+        if order_event is None:
             raise EntityNotFoundError
-        return {"success":True, "message":"List of all orders", 'data': order}
+        return {"success":True, "message":"List of all order events", 'data': order_event}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{orderId}')
-async def update(orderId:UUID, data:UpdateDTO):
+@router.patch('/{order_eventId}')
+async def update(order_eventId:UUID, data:UpdateDTO):
     try:
-        order = await Order.get_motor_collection().find_one_and_update({ '_id': orderId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
-        if order is None:
+        order_event = await OrderEvent.get_motor_collection().find_one_and_update({ '_id': order_eventId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
+        if order_event is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Order updated successfully', 'data': order}
+        return {'success':True, 'message':'Order event updated successfully', 'data': order_event}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code = enfe.status_code)
     except Exception as e:
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{orderId}')
-async def delete(orderId:UUID):
+@router.delete('/{order_eventId}')
+async def delete(order_eventId:UUID):
     try: 
-        order = await Order.get_motor_collection().find_one_and_delete({ '_id': orderId})
-        if order is None:
+        order_event = await OrderEvent.get_motor_collection().find_one_and_delete({ '_id': order_eventId})
+        if order_event is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Delete successfully'}
     except EntityNotFoundError as enfe:

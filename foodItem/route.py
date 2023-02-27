@@ -1,6 +1,6 @@
 from foodItem.dto import CreateDTO, UpdateDTO, ResponseDTO
 from foodItem.model import FoodItem 
-from error.exception import EntityNotFoundError, Unauthorized,NotAcceptable
+from error.exception import EntityNotFoundError
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
@@ -24,7 +24,7 @@ async def get_by_id(foodId:UUID):
         food_item = await FoodItem.get(foodId)
         if food_item is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'Successfully get the user', 'data':ResponseDTO(**food_item.dict()).dict()}
+        return {'success':True, 'message':'Successfully get the food item', 'data':ResponseDTO(**food_item.dict()).dict()}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code=enfe.status_code)
     except Exception as e:
@@ -37,7 +37,7 @@ async def get_all():
         food_item = await FoodItem.find().to_list()
         if food_item is None:
             raise EntityNotFoundError
-        return {"success":True, "message":"List of all types of users", 'data': food_item}
+        return {"success":True, "message":"List of all types of food items", 'data': food_item}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
@@ -48,7 +48,7 @@ async def update(foodId:UUID, data:UpdateDTO):
         food_item = await FoodItem.get_motor_collection().find_one_and_update({ '_id': foodId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
         if food_item is None:
             raise EntityNotFoundError
-        return {'success':True, 'message':'User updated successfully', 'data':food_item}
+        return {'success':True, 'message':'Food items updated successfully', 'data':food_item}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code=enfe.status_code)
     except Exception as e:

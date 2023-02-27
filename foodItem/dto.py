@@ -12,6 +12,7 @@ class CreateDTO(BaseModel):
     recipe: dict[str, Measurement]
 
 class UpdateDTO(BaseModel):
+    subcategory: Optional[str]
     image: Optional[str]
     price: Measurement
     offer: Optional[Discount]
@@ -20,6 +21,7 @@ class ResponseDTO(BaseModel):
     name: str
     description: str
     category: str
+    subcategory: Optional[str]
     cuisine: str
     price: Measurement
     recipe: dict[str, Measurement]

@@ -1,5 +1,5 @@
 from beanie import Document
-from pydantic import Field, BaseModel
+from pydantic import Field
 from uuid import UUID, uuid4
 from typing import Optional
 from restaurant.model import Restaurant
@@ -11,6 +11,7 @@ class FoodItem(Document):
     name: str
     description: str
     category: str
+    subcategory: Optional[str]
     cuisine: str
     price: Measurement
     recipe: dict[str, Measurement]

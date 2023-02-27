@@ -35,9 +35,10 @@ class DateFrequencyEnum(str, Enum):
     month_last_friday = "monthly last friday"
     month_last_saturday = "monthly last saturday"
 
-#class DiscountTypeEnum(str, Enum):
+class DiscountTypeEnum(str, Enum):
+    coupon = "coupon"
+    discount = "discount"
     
-
 class Base(BaseModel):
     id:UUID = Field(default_factory=uuid4)
     create_at:datetime = datetime.now()
@@ -62,7 +63,7 @@ class Measurement(BaseModel):
     
 class Discount(BaseModel):
     id:UUID = Field(default_factory=uuid4)
-    discount_type: str
+    discount_type: DiscountTypeEnum
     code: Optional[str]
     validation_date_range: Optional[RangeString]
     validation_time_range: Optional[RangeString]
