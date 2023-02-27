@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
 from .model import UserTypeEnum
 from uuid import UUID
 

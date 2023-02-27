@@ -15,3 +15,7 @@ class  NotAcceptable(Exception):
         self.status_code = status_code
         self.message = message      
         super().__init__(self.message)
+        
+class ImproperConfigurationError(Exception):
+  def __init__(self, message:str="Problem with MongoDB environment variables") -> None:
+    super().__init__(message)

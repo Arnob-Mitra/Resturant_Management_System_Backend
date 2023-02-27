@@ -13,7 +13,7 @@ async def create(data:CreateDTO):
     try: 
         restaurant = Restaurant(**data.dict())
         await restaurant.save()
-        return{'success':True, 'message':'Restaurant successfully created', 'data':restaurant}
+        return{'success': True, 'message':'Restaurant successfully created', 'data': restaurant}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':str(e)}, status_code = 500) 
     
@@ -24,7 +24,7 @@ async def get_by_id(restaurantId:UUID):
         restaurant = await Restaurant.get(restaurantId)
         if restaurant is None:
             return EntityNotFoundError
-        return {'success':True, 'message':'Successfully get the restaurant', 'data':ResponseDTO(**restaurant.dict()).dict()}
+        return {'success': True, 'message': 'Successfully get the restaurant', 'data': ResponseDTO(**restaurant.dict()).dict()}
     except EntityNotFoundError as enfe:
         return JSONResponse(content={'success':False, 'message': enfe.message}, status_code=enfe.status_code)
     except Exception as e:

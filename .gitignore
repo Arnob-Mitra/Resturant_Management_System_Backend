@@ -4,4 +4,4 @@ fastapi-env
 Lib
 Scripts
 Include
-/rmsEnv
+.env

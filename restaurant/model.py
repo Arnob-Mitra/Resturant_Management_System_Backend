@@ -21,8 +21,8 @@ class Restaurant(Document):
     name: str
     mode: ModeEnum
     chain_of: Optional[str]
-    cuisine_types: str
-    categories: str
+    cuisine_types: list[str] = []
+    categories: list[str] = []
     address: Address
     images: Optional[str]
     discounts: Optional[Discount]
