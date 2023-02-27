@@ -5,7 +5,6 @@ from user.model import User
 from uuid import UUID
 
 class CreateDTO(BaseModel):
-    event: str
     created_by: User
 
 class UpdateDTO(BaseModel):
@@ -14,7 +13,6 @@ class UpdateDTO(BaseModel):
     
 class ResponseDTO(BaseModel):
     id: UUID
-    event: str
     added: Optional[FoodItem]
-    #removed: Optional[]
+    removed: Optional[FoodItem]
         

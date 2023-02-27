@@ -6,6 +6,7 @@ from .model import Restaurant, ModeEnum
 
 class CreateDTO(BaseModel):
     name: str
+    mode: ModeEnum
     cuisine_types: str
     categories: str
     address: Address

@@ -5,22 +5,21 @@ from pydantic import Field
 from typing import Optional
 from enum import Enum
 from base.model import Address, Discount
-#from .model import Restaurant
 
 class ModeEnum(str, Enum):
-    dine_in = "dine in"
-    take_away = "take away"
-    delivery = "delivery"
-    dine_in_take_away = "dine in and take away"
-    dine_in_delivery = "dine in and delivery"
-    take_away_delivery = "take away and delivery"
-    all = "all options"  
+    DINE_IN = "dine in"
+    TAKE_AWAY = "take away"
+    DELIVERY = "delivery"
+    DINE_IN_TAKE_AWAY = "dine in and take away"
+    DINE_IN_DELIVERY = "dine in and delivery"
+    TAKE_AWAY_DELIVERY = "take away and delivery"
+    ALL = "all options"  
 
 class Restaurant(Document):
     id:UUID = Field(default_factory=uuid4)
     name: str
     mode: ModeEnum
-    chain_of: Optional[str]
+    #chain_of: Optional[Restaurant]
     cuisine_types: str
     categories: str
     address: Address

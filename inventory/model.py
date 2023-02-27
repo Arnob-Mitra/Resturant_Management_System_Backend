@@ -6,6 +6,8 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 class Quantity(BaseModel):
+    value: float
+    unit: str
     restock_alert: int
 
 class Inventory(Document):

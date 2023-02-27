@@ -6,11 +6,11 @@ from restaurant.model import Restaurant
 from enum import Enum
 
 class RatingEnum(str, Enum):
-    very_good = "very good"
-    good = "good"
-    average = "average"
-    bad = "bad"
-    very_bad = "very bad"
+    VERY_GOOD = "very good"
+    GOOD = "good"
+    AVERAGE = "average"
+    BAD = "bad"
+    VERY_BAD = "very bad"
 
 class Rating(Document):
     id: UUID = Field(default_factory=uuid4)
