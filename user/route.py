@@ -1,6 +1,6 @@
 from error.exception import EntityNotFoundError, Unauthorized
 from middleware.hash import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES, create_access_token, create_refresh_token
-from user.dto import ResponseDTO, CreateDTO, UpdateUserDTO, LoginDTO, ChangePasswordDTO
+from user.dto import OwnerCreateDTO, UserCreateDTO, UpdateUserDTO, ResponseDTO, LoginDTO, ChangePasswordDTO
 from user.model import User, UserTypeEnum
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -31,19 +31,28 @@ async def create(data:LoginDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code=500)
     
 
-@router.post('/', status_code=201)  
-async def create(data:CreateDTO):
+@router.post('/')  
+async def create(data: OwnerCreateDTO):
     try:
         user = User(**data.dict())
         user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         await user.save()
-        if user.user_type is UserTypeEnum.admin:
-            return {'success': True, 'message': 'Admin successfully created', 'data': user}
-        if user.user_type is UserTypeEnum.restaurant:
+        if user.user_type is UserTypeEnum.ADMIN:
+            return {'success': True, 'message': 'Admin successfully created', 'data':user}
+        if user.user_type is UserTypeEnum.RESTAURANT:
             return {'success': True, 'message': 'Restaurant successfully created', 'data': user}
-        return {'success':True, 'message':'User successfully created', 'data':user}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code = 500)
+ 
+ 
+@router.post('/userCreation') 
+async def createUser(data: UserCreateDTO):
+    try: 
+        user = User(**data.dict())
+        await user.save()
+        return {'success': True, 'message': 'User created successfully', 'data': user}
+    except Exception as e :
+        return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
 
 @router.get('/{userId}', status_code=200)
