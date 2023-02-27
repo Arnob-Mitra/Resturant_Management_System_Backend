@@ -1,4 +1,4 @@
-from beanie import Document
+from beanie import Document, Link
 from datetime import datetime
 from uuid import UUID, uuid4
 from pydantic import Field
@@ -19,11 +19,11 @@ class Restaurant(Document):
     id:UUID = Field(default_factory=uuid4)
     name: str
     mode: ModeEnum
-    #chain_of: Optional[Restaurant]
-    cuisine_types: str
-    categories: str
+    chain_of: Optional[UUID] 
+    cuisine_types: list[str]
+    categories: list[str]
     address: Address
-    images: Optional[str]
-    discounts: Optional[Discount]
+    images: Optional[list[str]]
+    discounts: Optional[list[Discount]]
     created_at:datetime = datetime.now()
     updated_at:datetime = datetime.now()

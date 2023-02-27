@@ -1,4 +1,4 @@
-from beanie import Document
+from beanie import Document, Link
 from pydantic import BaseModel, Field
 from base.model import Measurement
 from restaurant.model import Restaurant
@@ -15,6 +15,6 @@ class Inventory(Document):
     name: str
     price: Measurement
     quantity: Quantity
-    restaurant: Restaurant
+    restaurant: Link[Restaurant]
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()

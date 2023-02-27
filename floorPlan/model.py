@@ -1,4 +1,4 @@
-from beanie import Document 
+from beanie import Document, Link
 from restaurant.model import Restaurant
 from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
@@ -11,7 +11,7 @@ class Table(BaseModel):
 
 class FloorPlan(Document):
     id:UUID = Field(default_factory=uuid4)
-    restaurant: Restaurant
+    restaurant: Link[Restaurant]
     floor_number: str 
     tables: Table
     created_at:datetime = datetime.now()

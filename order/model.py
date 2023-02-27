@@ -1,4 +1,4 @@
-from beanie import Document
+from beanie import Document, Link
 from pydantic import BaseModel, Field
 from base.model import Measurement, Discount
 from typing import Optional
@@ -14,18 +14,22 @@ class FoodItem(BaseModel):
     price: Measurement
     offer: Optional[Discount]
 
-#class OrderStatusEnum(str, Enum):
+class OrderStatusEnum(str, Enum):
+    CREATED = "created"
+    PROCESSING = "processing"
+    UNPAID = "unpaid"
+    PAID = "paid"
 
 class Order(Document):
     id: UUID = Field(default_factory=uuid4)
-    status: str
+    status: OrderStatusEnum
     food_items: FoodItem
-    restaurant: Restaurant
-    floor_plan: FloorPlan
+    restaurant: Link[Restaurant]
+    floor_plan: Link[FloorPlan]
     table_number: str
     total_price: Measurement
     discounted_price: Measurement
-    created_by: User
-    served_by: User
+    created_by: Link[User]
+    served_by: Link[User]
     created_at:datetime = datetime.now()
     updated_at:datetime = datetime.now()
