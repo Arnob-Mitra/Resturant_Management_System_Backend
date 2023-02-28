@@ -22,6 +22,7 @@ async def create(data:CreateDTO):
 async def get_by_id(orderId:UUID):
     try:
         order = await Order.get(orderId)
+        print(order)
         if order is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Successfully get the order', 'data':ResponseDTO(**order.dict()).dict()}

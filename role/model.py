@@ -1,15 +1,10 @@
 from beanie import Document
 from typing import Optional
-from uuid import UUID, uuid4
-from pydantic import Field
-from datetime import datetime
+from uuid import UUID
+from base.model import Base
 
-class Role(Document):
-    id: UUID = Field(default_factory=uuid4)
+class Role(Base, Document):
     name: str
     permission: dict[str, int]
     restaurant: Optional[UUID]
     admin: bool
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
-    
