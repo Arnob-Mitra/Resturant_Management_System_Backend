@@ -13,11 +13,11 @@ class CreateDTO(BaseModel):
 
 class UpdateDTO(BaseModel):
     chain_of: Optional[UUID]
-    name: str
-    mode: ModeEnum
-    cuisine_types: list[str]
-    categories: list[str]
-    address: Address
+    name: Optional[str]
+    mode: Optional[ModeEnum]
+    cuisine_types: Optional[list[str]]
+    categories: Optional[list[str]]
+    address: Optional[Address]
     image: Optional[list[str]]    
     discounts: Optional[list[Discount]]
 
