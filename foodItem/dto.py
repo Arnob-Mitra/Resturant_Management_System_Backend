@@ -37,4 +37,4 @@ class ResponseDTO(BaseModel):
     recipe: dict[str, Measurement]
     image: Optional[str]
     restaurant: Link[Restaurant]
-    offer: Optional[Measurement]  
+    offer: Optional[Discount]  

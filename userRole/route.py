@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code = 201)  
 async def create(data:CreateDTO):
     try:
         user_role = UserRole(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{user_roleId}')
+@router.get('/{user_roleId}', status_code = 200)
 async def get_by_id(user_roleId:UUID):
     try:
         user_role = await UserRole.get(user_roleId)
@@ -31,7 +31,7 @@ async def get_by_id(user_roleId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
+@router.get('', status_code = 200)
 async def get_all():
     try:
         user_role = await UserRole.find().to_list()
@@ -42,7 +42,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{user_roleId}')
+@router.patch('/{user_roleId}', status_code = 200)
 async def update(user_roleId:UUID, data:UpdateDTO):
     try:
         user_role = await UserRole.get_motor_collection().find_one_and_update({ '_id': user_roleId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +55,7 @@ async def update(user_roleId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{user_roleId}')
+@router.delete('/{user_roleId}', status_code = 200)
 async def delete(user_roleId:UUID):
     try: 
         user_role = await UserRole.get_motor_collection().find_one_and_delete({ '_id': user_roleId})

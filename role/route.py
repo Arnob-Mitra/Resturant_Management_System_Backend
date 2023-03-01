@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code = 201)  
 async def create(data:CreateDTO):
     try:
         role = Role(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{roleId}')
+@router.get('/{roleId}', status_code = 200)
 async def get_by_id(roleId:UUID):
     try:
         role = await Role.get(roleId)
@@ -31,10 +31,15 @@ async def get_by_id(roleId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code = 200)
+async def get_all(name: str = None, admin: bool = True):
     try:
-        role = await Role.find().to_list()
+        criteria = {}
+        if name is not None:
+            criteria['name'] = name
+        if admin is not None:
+            criteria['admin'] = admin    
+        role = await Role.find(criteria).to_list()
         if role is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all types of roles", 'data': role}
@@ -42,7 +47,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{roleId}')
+@router.patch('/{roleId}', status_code = 200)
 async def update(roleId:UUID, data:UpdateDTO):
     try:
         role = await Role.get_motor_collection().find_one_and_update({ '_id': roleId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +60,7 @@ async def update(roleId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{roleId}')
+@router.delete('/{roleId}', status_code = 200)
 async def delete(roleId:UUID):
     try: 
         role = await Role.get_motor_collection().find_one_and_delete({ '_id': roleId})

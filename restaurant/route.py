@@ -1,5 +1,5 @@
 from restaurant.dto import CreateDTO, UpdateDTO, ResponseDTO
-from restaurant.model import Restaurant
+from restaurant.model import Restaurant, ModeEnum
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from error.exception import EntityNotFoundError
@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')
+@router.post('', status_code=201)
 async def create(data:CreateDTO):
     try: 
         restaurant = Restaurant(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success':False, 'message':str(e)}, status_code = 500) 
     
     
-@router.get('/{restaurantId}')
+@router.get('/{restaurantId}', status_code=200)
 async def get_by_id(restaurantId:UUID):
     try:
         restaurant = await Restaurant.get(restaurantId)
@@ -31,10 +31,17 @@ async def get_by_id(restaurantId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)
 
 
-@router.get('/')
-async def get_all():
+@router.get('', status_code=200)
+async def get_all(name: str = None, mode: ModeEnum = None, cuisine_types: list[str] = None):
     try:
-        restuarant = await Restaurant.find().to_list()
+        criteria = {}
+        if name is not None:
+            criteria['name'] = name    
+        if mode is not None:
+            criteria['mode'] = mode
+        if cuisine_types is not None:
+            criteria['cuisine_type'] = cuisine_types                
+        restuarant = await Restaurant.find(criteria).to_list()
         if restuarant is None:
             return EntityNotFoundError
         return {"success":True, "message":"List of all restaurants", 'data':restuarant}
@@ -42,7 +49,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':str(e)}, status_code=500)
 
 
-@router.patch('/{restaurantId}')
+@router.patch('/{restaurantId}', status_code=200)
 async def update(restaurantId:UUID, data:UpdateDTO):
     try:
         restaurant = await Restaurant.get_motor_collection().find_one_and_update({ '_id': restaurantId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +62,7 @@ async def update(restaurantId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)
     
 
-@router.delete('/{restaurantId}')
+@router.delete('/{restaurantId}', status_code=200)
 async def delete(restaurantId:UUID):
     try:
         restuarant = await Restaurant.get_motor_collection().find_one_and_delete({'_id':restaurantId})

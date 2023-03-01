@@ -2,7 +2,7 @@ from error.exception import EntityNotFoundError, Unauthorized
 from middleware.hash import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES, create_access_token, create_refresh_token
 from user.dto import OwnerCreateDTO, UserCreateDTO, UpdateUserDTO, ResponseDTO, LoginDTO, ChangePasswordDTO
 from user.model import User, UserTypeEnum
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
 from uuid import UUID
 from pymongo import ReturnDocument
@@ -70,10 +70,17 @@ async def get_by_id(userId:UUID):
         return JSONResponse(content={'success': False,'message': str(e)}, status_code=500) 
     
     
-@router.get('/', status_code=200)
-async def get():
+@router.get('', status_code = 200)
+async def get(phone: str = None, name: str = None, email:str = None):
     try:
-        user = await User.find().to_list()
+        criteria = {}
+        if phone is not None:
+            criteria['phone'] = phone
+        if name is not None:
+            criteria['name'] = name
+        if email is not None:
+            criteria['email'] = email
+        user = await User.find(criteria).to_list()
         return {'success': True, 'message':'List of all types of users', 'data': user}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
