@@ -32,10 +32,15 @@ async def init():
     if db_name is not None:
         await init_beanie(database=client[db_name], document_models=[
             "foodItem.model.FoodItem", 
-            "restaurant.model.Restaurant",
+            "restaurant.model.Restaurant", 
             "user.model.User",
             "floorPlan.model.FloorPlan",
-            "inventory.model.Inventory"
+            "inventory.model.Inventory",
+            "order.model.Order",
+            "orderEvent.model.OrderEvent",
+            "userRole.model.UserRole",
+            "role.model.Role",
+            "rating.model.Rating"
         ])
     else:
         raise ImproperConfigurationError

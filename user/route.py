@@ -31,7 +31,7 @@ async def create(data:LoginDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code=500)
     
 
-@router.post('/')  
+@router.post('')  
 async def create(data: OwnerCreateDTO):
     try:
         user = User(**data.dict())

@@ -26,6 +26,7 @@ class ResponseDTO(BaseModel):
     
 class LoginDTO(BaseModel):
     phone: str
+    password: str
     
 class ChangePasswordDTO(BaseModel):
     old_password: str

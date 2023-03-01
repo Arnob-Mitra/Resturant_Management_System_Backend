@@ -27,7 +27,7 @@ endpoints = [{
     'method': 'POST',
     'regex': r'^\/user$',
   },{
-    'method': 'POST',
+    'method': 'PATCH',
     'regex': r'^\/user\/cha\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
   },
 ]
