@@ -2,14 +2,9 @@ from beanie import Document, Link
 from restaurant.model import Restaurant
 from user.model import User
 from role.model import Role
-from uuid import UUID, uuid4
-from pydantic import Field
-from datetime import datetime
+from base.model import Base
 
-class UserRole(Document):
-    id: UUID = Field(default_factory=uuid4)
+class UserRole(Base, Document):
     user: Link[User]
     role: Link[Role]
     restaurant: Link[Restaurant]
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()

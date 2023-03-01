@@ -1,13 +1,11 @@
 from beanie import Document, Link
-from pydantic import BaseModel, Field
-from base.model import Measurement, Discount
+from pydantic import BaseModel
+from base.model import Base, Measurement, Discount
 from typing import Optional
 from enum import Enum
 from restaurant.model import Restaurant
 from floorPlan.model import FloorPlan
 from user.model import User
-from uuid import UUID, uuid4
-from datetime import datetime
 
 class FoodItem(BaseModel):
     name: str
@@ -20,8 +18,7 @@ class OrderStatusEnum(str, Enum):
     UNPAID = "unpaid"
     PAID = "paid"
 
-class Order(Document):
-    id: UUID = Field(default_factory=uuid4)
+class Order(Base, Document):
     status: OrderStatusEnum
     food_items: FoodItem
     restaurant: Link[Restaurant]
@@ -31,5 +28,3 @@ class Order(Document):
     discounted_price: Measurement
     created_by: Link[User]
     served_by: Link[User]
-    created_at:datetime = datetime.now()
-    updated_at:datetime = datetime.now()

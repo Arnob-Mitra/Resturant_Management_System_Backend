@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 from pydantic import Field
 from typing import Optional
 from enum import Enum
-from base.model import Address, Discount
+from base.model import Address, Base, Discount
 
 class ModeEnum(str, Enum):
     DINE_IN = "dine in"
@@ -15,8 +15,7 @@ class ModeEnum(str, Enum):
     TAKE_AWAY_DELIVERY = "take away and delivery"
     ALL = "all options"  
 
-class Restaurant(Document):
-    id:UUID = Field(default_factory=uuid4)
+class Restaurant(Base, Document):
     name: str
     mode: ModeEnum
     chain_of: Optional[UUID] 
@@ -25,5 +24,3 @@ class Restaurant(Document):
     address: Address
     images: Optional[list[str]]
     discounts: Optional[list[Discount]]
-    created_at:datetime = datetime.now()
-    updated_at:datetime = datetime.now()

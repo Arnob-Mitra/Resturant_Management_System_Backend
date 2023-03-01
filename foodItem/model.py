@@ -1,13 +1,9 @@
-from beanie import Document
-from pydantic import Field
-from uuid import UUID, uuid4
+from beanie import Document, Link
 from typing import Optional
 from restaurant.model import Restaurant
-from datetime import datetime
-from base.model import Measurement, Discount
+from base.model import Base, Measurement, Discount
 
-class FoodItem(Document):
-    id:UUID = Field(default_factory=uuid4)
+class FoodItem(Base, Document):
     name: str
     description: str
     category: str
@@ -16,7 +12,5 @@ class FoodItem(Document):
     price: Measurement
     recipe: dict[str, Measurement]
     image: Optional[str]
-    restaurant: Restaurant
+    restaurant: Link[Restaurant]
     offer: Optional[Discount]
-    created_at:datetime = datetime.now()
-    updated_at:datetime = datetime.now()

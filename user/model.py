@@ -5,13 +5,14 @@ from enum import Enum
 from uuid import UUID, uuid4
 from pydantic import Field
 
+from base.model import Base
+
 class UserTypeEnum(str, Enum):
     ADMIN = 'admin'
     RESTAURANT = 'restaurant'
     USER = 'user'
 
-class User(Document):
-    id:UUID = Field(default_factory = uuid4)
+class User(Base, Document):
     name: Optional[str]
     phone: str
     email: Optional[str]
@@ -19,5 +20,3 @@ class User(Document):
     user_type: UserTypeEnum
     is_active: bool = True
     last_login: datetime = datetime.now()
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
