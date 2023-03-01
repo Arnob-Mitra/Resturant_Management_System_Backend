@@ -30,10 +30,9 @@ async def init():
     
     db_name = os.environ.get('MONGODB_DATABASE', None)
     if db_name is not None:
-        await init_beanie(database=client['rms'], document_models=[
+        await init_beanie(database=client[db_name], document_models=[
             "foodItem.model.FoodItem", 
-            "restaurant.model.Restaurant", 
-            "foodItemEvents.model.FoodItemEvents", 
+            "restaurant.model.Restaurant",
             "user.model.User",
             "floorPlan.model.FloorPlan",
             "inventory.model.Inventory"

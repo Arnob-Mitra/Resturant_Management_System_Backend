@@ -37,10 +37,12 @@ async def create(data: OwnerCreateDTO):
         user = User(**data.dict())
         user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         await user.save()
+        access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES)
+        refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES)
         if user.user_type is UserTypeEnum.ADMIN:
-            return {'success': True, 'message': 'Admin successfully created', 'data':user}
+            return {'success': True, 'message': 'Admin successfully created', 'data': {'user': user, 'access-token': access_token, 'refresh-token': refresh_token}}
         if user.user_type is UserTypeEnum.RESTAURANT:
-            return {'success': True, 'message': 'Restaurant successfully created', 'data': user}
+            return {'success': True, 'message': 'Restaurant successfully created', 'data': {'user': user, 'access-token': access_token, 'refresh-token': refresh_token}}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code = 500)
  
