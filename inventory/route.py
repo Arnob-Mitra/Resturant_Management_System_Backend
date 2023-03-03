@@ -10,7 +10,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code=201)  
 async def create(data:CreateDTO):
     try:
         inventory = Inventory(**data.dict())
@@ -20,7 +20,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{inventoryId}')
+@router.get('/{inventoryId}', status_code=200)
 async def get_by_id(inventoryId:UUID):
     try:
         inventory = await Inventory.get(inventoryId)
@@ -33,10 +33,13 @@ async def get_by_id(inventoryId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code=200)
+async def get_all(name: str = None):
     try:
-        inventory = await Inventory.find().to_list()
+        criteria = {}
+        if name is not None:
+            criteria['name'] = name
+        inventory = await Inventory.find(criteria).to_list()
         if inventory is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all types of inventories", 'data':inventory}
@@ -44,7 +47,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{inventoryId}')
+@router.patch('/{inventoryId}', status_code=200)
 async def update(inventoryId:UUID, data:UpdateDTO):
     try:
         inventory = await Inventory.get_motor_collection().find_one_and_update({ '_id': inventoryId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -58,7 +61,7 @@ async def update(inventoryId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{inventoryId}')
+@router.delete('/{inventoryId}', status_code=200)
 async def delete(inventoryId:UUID):
     try: 
         inventory = await Inventory.get_motor_collection().find_one_and_delete({ '_id': inventoryId})

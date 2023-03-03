@@ -1,6 +1,6 @@
 from error.exception import EntityNotFoundError
 from floorPlan.dto import CreateDTO, UpdateDTO, ResponseDTO
-from floorPlan.model import FloorPlan
+from floorPlan.model import FloorPlan, Table
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code=201)  
 async def create(data:CreateDTO):
     try:
         floor_plan = FloorPlan(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{floorId}')
+@router.get('/{floorId}', status_code=200)
 async def get_by_id(floorId:UUID):
     try:
         floor_plan = await FloorPlan.get(floorId)
@@ -31,10 +31,13 @@ async def get_by_id(floorId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code=200)
+async def get_all(floor_number: str = None, tables: Table = None):
     try:
-        floor_plan = await FloorPlan.find().to_list()
+        criteria = {}
+        if floor_number is not None:
+            criteria['floor_number'] = floor_number   
+        floor_plan = await FloorPlan.find(criteria).to_list()
         if floor_plan is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all types of floor plans", 'data':floor_plan}
@@ -42,7 +45,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{floorId}')
+@router.patch('/{floorId}', status_code=200)
 async def update(floorId:UUID, data:UpdateDTO):
     try:
         floor_plan = await FloorPlan.get_motor_collection().find_one_and_update({ '_id': floorId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +58,7 @@ async def update(floorId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{floorId}')
+@router.delete('/{floorId}', status_code=200)
 async def delete(floorId:UUID):
     try: 
         floor_plan = await FloorPlan.get_motor_collection().find_one_and_delete({ '_id': floorId})

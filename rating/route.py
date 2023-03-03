@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code=201)  
 async def create(data:CreateDTO):
     try:
         rating = Rating(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{ratingId}')
+@router.get('/{ratingId}', status_code = 200)
 async def get_by_id(ratingId:UUID):
     try:
         rating = await Rating.get(ratingId)
@@ -31,10 +31,21 @@ async def get_by_id(ratingId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code = 200)
+async def get_all(ambience: RatingEnum = None, taste: RatingEnum = None, cleanliness: RatingEnum = None, staff: RatingEnum = None, budget_friendly: RatingEnum = None,):
     try:
-        rating = await Rating.find().to_list()
+        criteria = {}
+        if ambience is not None:
+            criteria['ambience'] = ambience
+        if taste is not None:
+            criteria['taste'] = taste
+        if cleanliness is not None:
+            criteria['cleanliness'] = cleanliness
+        if staff is not None:
+            criteria['staff'] = staff
+        if budget_friendly is not None:
+            criteria['budget_friendly'] = budget_friendly                
+        rating = await Rating.find(criteria).to_list()
         if rating is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all types of ratings", 'data': rating}
@@ -42,7 +53,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{ratingId}')
+@router.patch('/{ratingId}', status_code = 200)
 async def update(ratingId:UUID, data:UpdateDTO):
     try:
         rating = await Rating.get_motor_collection().find_one_and_update({ '_id': ratingId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -56,7 +67,7 @@ async def update(ratingId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{ratingId}')
+@router.delete('/{ratingId}', status_code = 200)
 async def delete(ratingId:UUID):
     try: 
         rating = await Rating.get_motor_collection().find_one_and_delete({ '_id': ratingId})

@@ -1,4 +1,4 @@
-from error.exception import EntityNotFoundError, Unauthorized
+from error.exception import EntityNotFoundError, Unauthorized, NotAcceptable
 from middleware.hash import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES, create_access_token, create_refresh_token
 from user.dto import OwnerCreateDTO, UserCreateDTO, UpdateUserDTO, ResponseDTO, LoginDTO, ChangePasswordDTO
 from user.model import User, UserTypeEnum
@@ -35,6 +35,8 @@ async def create(data:LoginDTO):
 async def create(data: OwnerCreateDTO):
     try:
         user = User(**data.dict())
+        if "+880" not in user.phone:
+            raise NotAcceptable
         user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         await user.save()
         access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -71,7 +73,7 @@ async def get_by_id(userId:UUID):
     
     
 @router.get('', status_code = 200)
-async def get(phone: str = None, name: str = None, email:str = None):
+async def get(phone: str = None, name: str = None, email:str = None, user_type: UserTypeEnum = None):
     try:
         criteria = {}
         if phone is not None:
@@ -80,6 +82,8 @@ async def get(phone: str = None, name: str = None, email:str = None):
             criteria['name'] = name
         if email is not None:
             criteria['email'] = email
+        if user_type is not None:
+            criteria['user_type'] = user_type    
         user = await User.find(criteria).to_list()
         return {'success': True, 'message':'List of all types of users', 'data': user}
     except Exception as e:

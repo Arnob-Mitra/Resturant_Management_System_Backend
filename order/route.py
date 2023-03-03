@@ -1,14 +1,16 @@
 from error.exception import EntityNotFoundError
 from order.dto import CreateDTO, UpdateDTO, ResponseDTO
-from order.model import Order
+from order.model import Order, OrderStatusEnum, FoodItem
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
 from pymongo import ReturnDocument
+from restaurant.model import Restaurant
+from beanie import Link
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code=201)  
 async def create(data:CreateDTO):
     try:
         order = Order(**data.dict())
@@ -18,7 +20,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{orderId}')
+@router.get('/{orderId}', status_code=200)
 async def get_by_id(orderId:UUID):
     try:
         order = await Order.get(orderId)
@@ -32,10 +34,17 @@ async def get_by_id(orderId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code=200)
+async def get_all(food_items: FoodItem = None, status: OrderStatusEnum = None, table_number: str = None):
     try:
-        order = await Order.find().to_list()
+        criteria = {}
+        if food_items is not None:
+            criteria['food_items'] = food_items
+        if status is not None:
+            criteria['status'] = status
+        if table_number is not None:
+            criteria['table_number'] = table_number           
+        order = await Order.find(criteria).to_list()
         if order is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all orders", 'data': order}
@@ -43,7 +52,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{orderId}')
+@router.patch('/{orderId}', status_code=200)
 async def update(orderId:UUID, data:UpdateDTO):
     try:
         order = await Order.get_motor_collection().find_one_and_update({ '_id': orderId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -56,7 +65,7 @@ async def update(orderId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{orderId}')
+@router.delete('/{orderId}', status_code=200)
 async def delete(orderId:UUID):
     try: 
         order = await Order.get_motor_collection().find_one_and_delete({ '_id': orderId})

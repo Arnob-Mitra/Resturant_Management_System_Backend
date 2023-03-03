@@ -32,15 +32,13 @@ async def get_by_id(restaurantId:UUID):
 
 
 @router.get('', status_code=200)
-async def get_all(name: str = None, mode: ModeEnum = None, cuisine_types: list[str] = None):
+async def get_all(name: str = None, mode: ModeEnum = None):
     try:
         criteria = {}
         if name is not None:
             criteria['name'] = name    
         if mode is not None:
-            criteria['mode'] = mode
-        if cuisine_types is not None:
-            criteria['cuisine_type'] = cuisine_types                
+            criteria['mode'] = mode               
         restuarant = await Restaurant.find(criteria).to_list()
         if restuarant is None:
             return EntityNotFoundError

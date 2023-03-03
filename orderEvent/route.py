@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
 
-@router.post('/')  
+@router.post('', status_code = 201)  
 async def create(data:CreateDTO):
     try:
         order_event = OrderEvent(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
         
-@router.get('/{order_eventId}')
+@router.get('/{order_eventId}', status_code = 200)
 async def get_by_id(order_eventId:UUID):
     try:
         order_event = await OrderEvent.get(order_eventId)
@@ -31,7 +31,7 @@ async def get_by_id(order_eventId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
+@router.get('', status_code = 200)
 async def get_all():
     try:
         order_event = await OrderEvent.find().to_list()
@@ -42,7 +42,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{order_eventId}')
+@router.patch('/{order_eventId}', status_code = 200)
 async def update(order_eventId:UUID, data:UpdateDTO):
     try:
         order_event = await OrderEvent.get_motor_collection().find_one_and_update({ '_id': order_eventId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +55,7 @@ async def update(order_eventId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{order_eventId}')
+@router.delete('/{order_eventId}', status_code = 200)
 async def delete(order_eventId:UUID):
     try: 
         order_event = await OrderEvent.get_motor_collection().find_one_and_delete({ '_id': order_eventId})

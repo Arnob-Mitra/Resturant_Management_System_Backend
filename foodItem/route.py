@@ -8,7 +8,7 @@ from pymongo import ReturnDocument
 
 router = APIRouter()
     
-@router.post('/')  
+@router.post('', status_code=201)  
 async def create(data:CreateDTO):
     try:
         food_item = FoodItem(**data.dict())
@@ -18,7 +18,7 @@ async def create(data:CreateDTO):
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code = 500)
     
 
-@router.get('/{foodId}')
+@router.get('/{foodId}', status_code=200)
 async def get_by_id(foodId:UUID):
     try:
         food_item = await FoodItem.get(foodId)
@@ -31,10 +31,19 @@ async def get_by_id(foodId:UUID):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code = 500) 
     
     
-@router.get('/')
-async def get_all():
+@router.get('', status_code=200)
+async def get_all(name: str = None, category: str = None, subcategory: str = None, cuisine: str = None):
     try:
-        food_item = await FoodItem.find().to_list()
+        critetia = {}
+        if name is not None:
+            critetia['name'] = name
+        if category is not None:
+            critetia['category'] = category
+        if subcategory is not None:
+            critetia['subcategory'] = subcategory
+        if cuisine is not None:
+            critetia['cuisine'] = cuisine            
+        food_item = await FoodItem.find(critetia).to_list()
         if food_item is None:
             raise EntityNotFoundError
         return {"success":True, "message":"List of all types of food items", 'data': food_item}
@@ -42,7 +51,7 @@ async def get_all():
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
-@router.patch('/{foodId}')
+@router.patch('/{foodId}', status_code=200)
 async def update(foodId:UUID, data:UpdateDTO):
     try:
         food_item = await FoodItem.get_motor_collection().find_one_and_update({ '_id': foodId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
@@ -55,7 +64,7 @@ async def update(foodId:UUID, data:UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{foodId}')
+@router.delete('/{foodId}', status_code=200)
 async def delete(foodId:UUID):
     try: 
         food_item = await FoodItem.get_motor_collection().find_one_and_delete({ '_id': foodId})

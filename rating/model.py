@@ -1,7 +1,4 @@
 from beanie import Document, Link
-from uuid import UUID, uuid4
-from datetime import datetime
-from pydantic import Field
 from restaurant.model import Restaurant
 from enum import Enum
 from base.model import Base
