@@ -19,8 +19,8 @@ class OrderStatusEnum(str, Enum):
     PAID = "paid"
 
 class Order(Base, Document):
-    status: OrderStatusEnum
-    food_items: FoodItem
+    status: OrderStatusEnum = OrderStatusEnum.CREATED
+    food_items: list[FoodItem]
     restaurant: Link[Restaurant]
     floor_plan: Link[FloorPlan]
     table_number: str

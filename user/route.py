@@ -10,20 +10,23 @@ import bcrypt
 
 router = APIRouter()
 
-#ABCDEF put the status code as shown in here for all requests
-#ABCDEF get_all function should have query parameters for efficient finding and filtering
-#ABCDEF get_all function should have two extra parameters skip and limit for pagination purposes
-#ABCDEF all patch function should also update the "updated_at" field
-
-@router.post('/login', status_code=200) #ABCDEF path creation 
+#ABCDEF path creation 
+@router.post('/login', status_code=200)
 async def create(data:LoginDTO):
     try:
-        user = await User.find_one(User.phone == data.phone) #ABCDEF check that user phone number(input) and stored phone number (database) are matched or not
-        if user is not None and bcrypt.checkpw(data.password.encode('utf-8'), user.password.encode('utf-8')): #ABCDEF check that user password(input) and stored hashed password(database) are matched
-            access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES)   #ABCDEF then create an access token that is validated for 30mins against that user id 
-            refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES) #ABCDEF then create an refresh token that is validated for 30mins against that user id 
-            return {'success': True, 'message': 'Login successfully', 'data': {'access_token': access_token, 'refresh_token': refresh_token}} #ABCDEF and return this message
-        else:    #ABCDEF otherwise throw the exceptions
+        #ABCDEF check that user phone number(input) and stored phone number (database) are matched or not
+        user = await User.find_one(User.phone == data.phone)
+        
+        #ABCDEF check that user password(input) and stored hashed password(database) are matched
+        if user is not None and bcrypt.checkpw(data.password.encode('utf-8'), user.password.encode('utf-8')):
+            #ABCDEF then create an access token that is validated for 30mins against that user id
+            access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES) 
+            #ABCDEF then create an refresh token that is validated for 30mins against that user id 
+            refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES)
+            #ABCDEF and return this message
+            return {'success': True, 'message': 'Login successfully', 'data': {'access_token': access_token, 'refresh_token': refresh_token}}
+        #ABCDEF otherwise throw the exceptions
+        else:
             raise Unauthorized
     except Unauthorized as ue:
         return JSONResponse(content={'success': False, 'message': ue.message}, status_code=ue.status_code)
@@ -31,16 +34,22 @@ async def create(data:LoginDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code=500)
     
 
-@router.post('')  #ABCDEF path creation 
-async def create(data: OwnerCreateDTO): #ABCDEF created for admin and restaurant owner
+#ABCDEF path creation 
+#ABCDEF created for admin and restaurant owner
+@router.post('')
+async def create(data: OwnerCreateDTO):
     try:
         user = User(**data.dict())  
-        if "+880" not in user.phone:  #ABCDEF check whether the phone number is contained in the bd or not
+        #ABCDEF check whether the phone number is contained in the bd or not
+        if "+880" not in user.phone:
             raise NotAcceptable
-        user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()) #ABCDEF hashed that password with salt 
+        #ABCDEF hashed that password with salt
+        user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         await user.save()
-        access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES) #ABCDEF then create an access token that is validated for 30mins against that user id 
-        refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES)   #ABCDEF then create an refresh token that is validated for 30mins against that user id 
+        #ABCDEF then create an access token that is validated for 30mins against that user id 
+        access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES)
+        #ABCDEF then create an refresh token that is validated for 30mins against that user id
+        refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES) 
         if user.user_type is UserTypeEnum.ADMIN:
             return {'success': True, 'message': 'Admin successfully created', 'data': {'user': user, 'access-token': access_token, 'refresh-token': refresh_token}}
         if user.user_type is UserTypeEnum.RESTAURANT:
@@ -59,8 +68,9 @@ async def createUser(data: UserCreateDTO):
         return JSONResponse(content={'success': False, 'message': str(e)}, status_code = 500)
     
 
+#ABCDEF get the info by user id 
 @router.get('/{userId}', status_code=200)
-async def get_by_id(userId:UUID):  #ABCDEF get the info by user id 
+async def get_by_id(userId:UUID):
     try:
         user = await User.get(userId)
         if user is None:
@@ -71,9 +81,10 @@ async def get_by_id(userId:UUID):  #ABCDEF get the info by user id
     except Exception as e:
         return JSONResponse(content={'success': False,'message': str(e)}, status_code=500) 
     
-    
+
+#ABCDEF get_all function should have query parameters 
 @router.get('', status_code = 200)
-async def get(phone: str = None, name: str = None, email:str = None, user_type: UserTypeEnum = None): #ABCDEF get_all function should have query parameters 
+async def get(phone: str = None, name: str = None, email:str = None, user_type: UserTypeEnum = None):
     try:
         criteria = {}
         if phone is not None:
@@ -90,10 +101,12 @@ async def get(phone: str = None, name: str = None, email:str = None, user_type: 
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
 
+#ABCDEF created for updating the info of admin and restaurant
 @router.patch('/{userId}', status_code=200)
-async def update(userId:UUID, data:UpdateUserDTO): #ABCDEF created for updating the info of admin and restaurant
+async def update(userId:UUID, data:UpdateUserDTO):
     try:
-        user = await User.get_motor_collection().find_one_and_update({ '_id': userId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER) #ABCDEF find that id and set the updated info/data against that id and returned that document  
+        #ABCDEF find that id and set the updated info/data against that id and returned that document
+        user = await User.get_motor_collection().find_one_and_update({ '_id': userId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)  
         if user is None:
             raise EntityNotFoundError
         return {'success': True, 'message': 'User updated successfully', 'data': user}

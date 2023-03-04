@@ -11,13 +11,10 @@ from typing import Optional
 
 class CreateDTO(BaseModel):
     status: OrderStatusEnum 
-    food_items: FoodItem
+    food_items: list[FoodItem]
     restaurant: Link[Restaurant]
     floor_plan: Link[FloorPlan]
     table_number: str
-    total_price: Measurement
-    discounted_price: Measurement
-    created_by: Link[User]
     served_by: Link[User]
     
 class UpdateDTO(BaseModel):
