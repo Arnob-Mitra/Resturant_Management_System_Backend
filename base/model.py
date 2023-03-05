@@ -41,6 +41,7 @@ class DiscountTypeEnum(str, Enum):
     
 class Base(BaseModel):
     id:UUID = Field(default_factory=uuid4)
+    is_active: bool = True
     created_at:datetime = datetime.now()
     updated_at:datetime = datetime.now()
     
