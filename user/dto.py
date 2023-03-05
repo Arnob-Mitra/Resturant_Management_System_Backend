@@ -11,7 +11,7 @@ class CreateDTO(BaseModel):
     phone: Optional[str]
     gender: Optional[GenderEnum]
     date_of_birth: Optional[datetime]
-    user_type: Optional[UserTypeEnum]
+    user_type: UserTypeEnum
 
 class UpdateDTO(BaseModel):
     name: Optional[str]
