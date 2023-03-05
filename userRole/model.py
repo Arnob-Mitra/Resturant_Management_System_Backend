@@ -6,5 +6,5 @@ from base.model import Base
 
 class UserRole(Base, Document):
     user: Link[User]
-    role: Link[Role]
+    role: Role
     restaurant: Link[Restaurant]
