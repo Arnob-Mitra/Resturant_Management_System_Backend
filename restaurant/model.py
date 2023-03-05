@@ -1,4 +1,4 @@
-from beanie import Document, Link
+from beanie import Document
 from uuid import UUID
 from typing import Optional
 from enum import Enum

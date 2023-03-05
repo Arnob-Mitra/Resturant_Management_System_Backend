@@ -55,10 +55,10 @@ async def create(data: CreateDTO):
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code = 500)
     
     
-@router.get('/{userId}', status_code=200)
-async def get_by_id(userId: UUID):
+@router.get('/{user_id}', status_code=200)
+async def get_by_id(user_id: UUID):
     try:
-        user = await User.get(userId)
+        user = await User.get(user_id)
         if user is None:
             raise EntityNotFoundError
         return {'success': True, 'message': 'Successfully get the user', 'data': ResponseDTO(**user.dict()).dict()}
@@ -87,11 +87,11 @@ async def get_all(phone: str = None, name: str = None, email:str = None, user_ty
         return JSONResponse(content={'success':False, 'message':(str(e))}, status_code = 500)
     
     
-@router.patch('/{userId}', status_code=200)
-async def update(userId: UUID, data: UpdateDTO):
+@router.patch('/{user_id}', status_code=200)
+async def update(user_id: UUID, data: UpdateDTO):
     try:
         doc = utils.create_update_doc(data.dict())
-        user = await User.get_motor_collection().find_one_and_update({ '_id': userId}, {'$set': doc}, return_document=ReturnDocument.AFTER)
+        user = await User.get_motor_collection().find_one_and_update({ '_id': user_id}, {'$set': doc}, return_document=ReturnDocument.AFTER)
         
         if user is None:
             raise EntityNotFoundError
@@ -103,21 +103,23 @@ async def update(userId: UUID, data: UpdateDTO):
         return JSONResponse(content={'success': False,'message': str(e)}, status_code=500)  
  
  
-@router.patch('/changePassword/{user_Id}', status_code=200)
-async def change_password(user_Id: UUID, data: ChangePasswordDTO):
+@router.patch('/changePassword/{user_id}', status_code=200)
+async def change_password(user_id: UUID, data: ChangePasswordDTO):
     try:
-        doc = utils.create_update_doc(data.dict())
-        user = await User.get_motor_collection().find_one_and_update({ '_id': user_Id}, {'$set': doc}, return_document=ReturnDocument.AFTER)
+        user = await User.get(user_id)
+        if user is not None and bcrypt.checkpw(data.old_password.encode('utf-8'), user.password.encode('utf-8')):
+            doc = utils.create_update_doc({'password': bcrypt.hashpw(data.new_password.encode('utf-8'), bcrypt.gensalt())})
+            user = await User.get_motor_collection().find_one_and_update({ '_id': user_id}, {'$set': doc}, return_document=ReturnDocument.AFTER)
          
         return {'success': True, 'message': 'Password has been changed successfully', 'data': user}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message': str(e)}, status_code=500)
     
     
-@router.delete('/{userId}', status_code=200)
-async def delete(userId:UUID): 
+@router.delete('/{user_id}', status_code=200)
+async def delete(user_id:UUID): 
     try: 
-        user = await User.get_motor_collection().find_one_and_delete({ '_id': userId})
+        user = await User.get_motor_collection().find_one_and_delete({ '_id': user_id})
         
         if user is None:
             raise EntityNotFoundError
