@@ -1,27 +1,38 @@
+import asyncio
 from restaurant.dto import CreateDTO, UpdateDTO, ResponseDTO
 from restaurant.model import Restaurant, ModeEnum
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from error.exception import EntityNotFoundError
 from uuid import UUID
 from pymongo import ReturnDocument
+from role.model import Role
+
+from user.model import User
+from userRole.model import UserRole
 
 router = APIRouter()
 
 @router.post('', status_code=201)
-async def create(data:CreateDTO):
-    try: 
+async def create(request: Request, data:CreateDTO):
+    try:
+        user, role = await asyncio.gather(User.get(request.state.user), Role.find_one({'name': 'OWNER'}))
+        
+        if user is None or role is None:
+            raise EntityNotFoundError
+        
         restaurant = Restaurant(**data.dict())
-        await restaurant.save()
+        user_role = UserRole(user=user, role=role, restaurant=restaurant)
+        await asyncio.gather(restaurant.save(), user_role.save())
         return{'success': True, 'message':'Restaurant successfully created', 'data': restaurant}
     except Exception as e:
         return JSONResponse(content={'success':False, 'message':str(e)}, status_code = 500) 
     
     
-@router.get('/{restaurantId}', status_code=200)
-async def get_by_id(restaurantId:UUID):
+@router.get('/{restaurant_id}', status_code=200)
+async def get_by_id(restaurant_id:UUID):
     try:
-        restaurant = await Restaurant.get(restaurantId)
+        restaurant = await Restaurant.get(restaurant_id)
         if restaurant is None:
             return EntityNotFoundError
         return {'success': True, 'message': 'Successfully get the restaurant', 'data': ResponseDTO(**restaurant.dict()).dict()}
