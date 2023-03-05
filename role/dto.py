@@ -5,6 +5,7 @@ from uuid import UUID
 class CreateDTO(BaseModel):
     name: str
     permission: dict[str, int]
+    restaurant: Optional[UUID]
     admin: bool
     
 class UpdateDTO(BaseModel):
