@@ -10,8 +10,6 @@ class CreateDTO(BaseModel):
 class UpdateDTO(BaseModel):
     name: Optional[str]
     permission: Optional[dict[str, int]]
-    restaurant: Optional[UUID]
-    admin: Optional[bool]
     
 class ResponseDTO(BaseModel):
     id: UUID

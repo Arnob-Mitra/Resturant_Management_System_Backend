@@ -1,7 +1,5 @@
 from beanie import Document, Link
-from datetime import datetime
-from uuid import UUID, uuid4
-from pydantic import Field
+from uuid import UUID
 from typing import Optional
 from enum import Enum
 from base.model import Address, Base, Discount
