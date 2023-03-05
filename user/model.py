@@ -20,7 +20,7 @@ class User(Base, Document):
     name: Optional[str]
     email : Optional[Indexed(EmailStr, unique=True, partialFilterExpression={'email': {'$type': 'string'}})]
     phone : Optional[Indexed(constr(regex=r'^([+]{1}[8]{2}(01){1}[3-9]{1}\d{8})$'), unique=True, partialFilterExpression={'phone': {'$type': 'string'}})]
-    password: Optional[constr(regex=r'^((?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,})$')]
+    password: Optional[str]
     user_type: UserTypeEnum
     gender: Optional[GenderEnum]
     date_of_birth: Optional[datetime]

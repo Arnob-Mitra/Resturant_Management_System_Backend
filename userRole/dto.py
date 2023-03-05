@@ -3,21 +3,20 @@ from uuid import UUID
 from restaurant.model import Restaurant
 from user.model import User
 from role.model import Role
-from beanie import Link
 from typing import Optional
 
 class CreateDTO(BaseModel):
-    user: Link[User]
-    role: Link[Role]
-    restaurant: Link[Restaurant]
+    user: UUID
+    role: UUID
+    restaurant: UUID
 
 class UpdateDTO(BaseModel):
-    user: Optional[Link[User]]
-    role: Optional[Link[Role]]
-    restaurant: Optional[Link[Restaurant]]
+    user: Optional[UUID]
+    role: Optional[UUID]
+    restaurant: Optional[UUID]
 
 class ResponseDTO(BaseModel):
     id: UUID
-    user: Link[User]
-    role: Link[Role]
-    restaurant: Link[Restaurant]
+    user: User
+    role: Role
+    restaurant: Restaurant
