@@ -69,7 +69,7 @@ async def get_by_id(userId: UUID):
     
     
 @router.get('', status_code = 200)
-async def get(phone: str = None, name: str = None, email:str = None, user_type: UserTypeEnum = None):
+async def get_all(phone: str = None, name: str = None, email:str = None, user_type: UserTypeEnum = None):
     try:
         criteria = {}
         if phone is not None:
@@ -104,7 +104,7 @@ async def update(userId: UUID, data: UpdateDTO):
  
  
 @router.patch('/changePassword/{user_Id}', status_code=200)
-async def changePassword(user_Id: UUID, data: ChangePasswordDTO):
+async def change_password(user_Id: UUID, data: ChangePasswordDTO):
     try:
         doc = utils.create_update_doc(data.dict())
         user = await User.get_motor_collection().find_one_and_update({ '_id': user_Id}, {'$set': doc}, return_document=ReturnDocument.AFTER)
