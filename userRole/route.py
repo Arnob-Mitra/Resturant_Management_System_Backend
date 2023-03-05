@@ -65,10 +65,10 @@ async def update(user_role_id: UUID, data: UpdateDTO):
         return JSONResponse(content={'success':False,'message': str(e)}, status_code=500)  
     
     
-@router.delete('/{user_roleId}', status_code = 200)
-async def delete(user_roleId:UUID):
+@router.delete('/{user_role_id}', status_code = 200)
+async def delete(user_role_id:UUID):
     try: 
-        user_role = await UserRole.get_motor_collection().find_one_and_delete({ '_id': user_roleId})
+        user_role = await UserRole.get_motor_collection().find_one_and_delete({ '_id': user_role_id})
         if user_role is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Delete successfully'}
