@@ -16,6 +16,8 @@ from rating.route import router as ratingRouter
 from role.route import router as roleRouter
 from userRole.route import router as userRoleRouter
 
+from utils import initialisation
+
 load_dotenv()
 
 app = FastAPI()
@@ -56,3 +58,4 @@ app.add_middleware(
 @app.on_event('startup')
 async def start_db():
   await mongodb.init()
+  await initialisation.initialize()
