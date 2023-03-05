@@ -7,8 +7,6 @@ from restaurant.model import ModeEnum
 class CreateDTO(BaseModel):
     name: str
     mode: ModeEnum
-    cuisine_types: list[str]
-    categories: list[str]
     address: Address
 
 class UpdateDTO(BaseModel):
