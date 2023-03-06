@@ -18,9 +18,9 @@ router = APIRouter()
 @router.post('/login', status_code=200)
 async def login(data: LoginDTO):
     try:
-        user = await User.find_one(User.phone == data.phone)
+        user = await User.find_one(User.email == data.email)
         
-        if user is not None and bcrypt.checkpw(data.password.encode('utf-16'), user.password.encode('utf-16')):
+        if user is not None and bcrypt.checkpw(data.password.encode('utf-8'), user.password.encode('utf-8')):
             access_token = create_access_token(user.id, ACCESS_TOKEN_EXPIRE_MINUTES) 
             refresh_token = create_refresh_token(user.id, REFRESH_TOKEN_EXPIRE_MINUTES)
             
@@ -40,7 +40,7 @@ async def login(data: LoginDTO):
 async def create(data: CreateDTO):
     try:
         user = User(**data.dict())  
-        user.password = bcrypt.hashpw(user.password.encode('utf-16'), bcrypt.gensalt())
+        user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         
         await user.save()
         

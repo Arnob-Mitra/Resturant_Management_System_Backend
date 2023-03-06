@@ -51,7 +51,6 @@ async def get_all(name: str = None):
 async def update(inventoryId:UUID, data:UpdateDTO):
     try:
         inventory = await Inventory.get_motor_collection().find_one_and_update({ '_id': inventoryId}, {'$set': data.dict()}, return_document=ReturnDocument.AFTER)
-        # await User.find_one(User.id == userId).update({'$set': data.dict()})
         if inventory is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Inventory updated successfully', 'data':inventory}

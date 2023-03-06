@@ -12,6 +12,7 @@ router = APIRouter()
 
 @router.post('', status_code = 201)  
 async def create(data: CreateDTO):
+    print(data)
     try:
         role = Role(**data.dict())
         await role.save()
@@ -55,8 +56,7 @@ async def get_all(name: str = None, admin: bool = None, restaurant: UUID = None)
 async def update(roleId:UUID, data:UpdateDTO):
     try:
         doc = utils.create_update_doc(data.dict())
-        role = await Role.get_motor_collection().find_one_and_update({ '_id': roleId}, {'$set': doc}, 
-                                                                     return_document=ReturnDocument.AFTER)
+        role = await Role.get_motor_collection().find_one_and_update({ '_id': roleId}, {'$set': doc}, return_document=ReturnDocument.AFTER)
         if role is None:
             raise EntityNotFoundError
         return {'success':True, 'message':'Role updated successfully', 'data': role}

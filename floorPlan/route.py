@@ -32,7 +32,7 @@ async def get_by_id(floorId:UUID):
     
     
 @router.get('', status_code=200)
-async def get_all(floor_number: str = None, tables: Table = None):
+async def get_all(floor_number: str = None):
     try:
         criteria = {}
         if floor_number is not None:

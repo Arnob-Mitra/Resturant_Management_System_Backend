@@ -34,3 +34,5 @@ class User(Base, Document):
         
         if values.get('user_type') == UserTypeEnum.USER and values.get('phone') is None:
             raise ValueError('Please provide phone number')
+        
+        return values
