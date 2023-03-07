@@ -2,17 +2,23 @@ from error.exception import EntityNotFoundError
 from role.dto import CreateDTO, UpdateDTO, ResponseDTO
 from role.model import Role
 from utils import utils
+import asyncio
 
+import asyncio
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from uuid import UUID
 from pymongo import ReturnDocument
 
+from user.model import User
+from restaurant.model import Restaurant 
+
+
+
 router = APIRouter()
 
 @router.post('', status_code = 201)  
 async def create(data: CreateDTO):
-    print(data)
     try:
         role = Role(**data.dict())
         await role.save()

@@ -7,7 +7,7 @@ class CreateDTO(BaseModel):
     name: str
     permission: list[RolePermission]
     restaurant: Optional[UUID]
-    admin: bool
+    admin: bool 
     
 class UpdateDTO(BaseModel):
     name: Optional[str]

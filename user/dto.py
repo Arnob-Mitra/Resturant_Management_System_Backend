@@ -7,7 +7,7 @@ from datetime import datetime
 class CreateDTO(BaseModel):
     name: Optional[str]
     email: EmailStr
-    password: constr(regex=r'^((?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,})$')
+    password: constr(regex=r'^(?=.*[A-Za-z])(?=.*\d)[@$!%*#?&A-Za-z\d]{8,}$')
     phone: Optional[str]
     gender: Optional[GenderEnum]
     date_of_birth: Optional[datetime]
@@ -29,8 +29,8 @@ class ResponseDTO(BaseModel):
     
 class LoginDTO(BaseModel):
     email: EmailStr
-    password: constr(regex=r'^((?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,})$')
+    password: constr(regex=r'^(?=.*[A-Za-z])(?=.*\d)[@$!%*#?&A-Za-z\d]{8,}$')
     
 class ChangePasswordDTO(BaseModel):
-    old_password: constr(regex=r'^((?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,})$')
-    new_password: constr(regex=r'^((?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,})$')
+    old_password: constr(regex=r'^(?=.*[A-Za-z])(?=.*\d)[@$!%*#?&A-Za-z\d]{8,}$')
+    new_password: constr(regex=r'^(?=.*[A-Za-z])(?=.*\d)[@$!%*#?&A-Za-z\d]{8,}$')

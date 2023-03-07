@@ -12,4 +12,4 @@ class Role(Base, Document):
     name: str
     permission: list[RolePermission]
     restaurant: Optional[UUID]
-    admin: bool
+    admin: bool = False
